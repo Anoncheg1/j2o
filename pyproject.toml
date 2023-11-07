@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "j2o"
+readme = "README.md"
+version = "0.0.1"
+authors = [
+  { name="Anoncheg1" }
+]
+description = """Converter from Jupyter notebook format to
+Org format (Emacs text editor), without requirements for any libraries."""
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Anoncheg1/j2o"
+"Bug Tracker" = "https://github.com/Anoncheg1/j2o/issues"
+
+[project.scripts]
+mfs = "micro_file_server.__main__:main"
+
+# [pytest]
+# testpaths = "test"
