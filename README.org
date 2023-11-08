@@ -3,7 +3,7 @@ Converter from Jupyter to Org file format without any dependencies.
 
 I don't want to install Jupyter core and nbconver or pandoc with 164
  dependencies just to be able to convert simple JSON format, that is
- why I just write coverter from scratch.
+ why I just wrote coverter from scratch.
 
 Tested for nbformat: 4.2.
 
