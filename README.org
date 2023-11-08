@@ -30,20 +30,23 @@ options:
 JSON
 #+begin_src json
 {
-cells: [
-  cell_type: "code/markdown",
-  source: ["\n","\n",""],
-  outputs: [{
-    text: ["\n", "\n"],
-    data: {
-      image/png: "base64....",
-      text/plain: "image description"
+  cells: [
+    cell_type: "code/markdown",
+    source: ["\n","\n",""],
+    outputs: [{
+      text: ["\n", "\n"],
+      data: {
+        image/png: "base64....",
+        text/plain: "image description"}
+      }
+    ]
+  ],
+  metadata: {
+    kernelspec: {
+      language: "python"
     }
-  }]
-],
-metadata: {}
+  }
 }
-
 #+end_src
 
 * code development
@@ -152,6 +155,8 @@ for i, cell in enumerate(myfile["cells"]):
             PRINT()
 f.close()
 #+end_src
+
+Output:
 
 #+RESULTS:
 #+begin_example

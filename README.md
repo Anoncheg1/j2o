@@ -1,13 +1,13 @@
 
 # Table of Contents
 
-1.  [j2o](#org6f9ed41)
-2.  [Command line usage](#org13d5e95)
-3.  [review of format for ipynb](#org71ead7a)
-4.  [code development](#orgc102e4e)
+1.  [j2o](#org2d0c40f)
+2.  [Command line usage](#org64893c8)
+3.  [review of format for ipynb](#orged702cf)
+4.  [code development](#org55ccb84)
 
 
-<a id="org6f9ed41"></a>
+<a id="org2d0c40f"></a>
 
 # j2o
 
@@ -22,17 +22,17 @@ Tested for nbformat: 4.2.
 TODO: make reverse convrter.
 
 
-<a id="org13d5e95"></a>
+<a id="org64893c8"></a>
 
 # Command line usage
 
     usage: j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]
-
+    
     Convert a Jupyter notebook to Org file (Emacs) and vice versa
-
+    
     positional arguments:
       jupfile_              Jupyter file
-
+    
     options:
       -h, --help            show this help message and exit
       -j JUPFILE, --jupfile JUPFILE
@@ -43,29 +43,33 @@ TODO: make reverse convrter.
       -w, --overwrite       Flag whether to overwrite existing target file.
 
 
-<a id="org71ead7a"></a>
+<a id="orged702cf"></a>
 
 # review of format for ipynb
 
 JSON
 
     {
-    cells: [
-      cell_type: "code/markdown",
-      source: ["\n","\n",""],
-      outputs: [{
-        text: ["\n", "\n"],
-        data: {
-          image/png: "base64....",
-          text/plain: "image description"
+      cells: [
+        cell_type: "code/markdown",
+        source: ["\n","\n",""],
+        outputs: [{
+          text: ["\n", "\n"],
+          data: {
+            image/png: "base64....",
+            text/plain: "image description"}
+          }
+        ]
+      ],
+      metadata: {
+        kernelspec: {
+          language: "python"
         }
-      }]
-    ],
-    metadata: {}
+      }
     }
 
 
-<a id="orgc102e4e"></a>
+<a id="org55ccb84"></a>
 
 # code development
 
@@ -73,34 +77,34 @@ JSON
     import json
     import base64
     import os
-
+    
     source_filename = 'tests/draw-samples.ipynb'
     dir_target = './autoimgs'
     org_babel_min_lines_for_block_output = 10 # ob-core.el org-babel-min-lines-for-block-output
-
+    
     PRINT = lambda *x: print("".join(x))
     # f = open("out.org", "w")
     # PRINT = lambda *x: f.write("".join(x) + '\n') # global
     # with open("dates.txt", "w") as f:
-
-
+    
+    
     try:
         with open(source_filename, "r", encoding="utf-8") as infile:
             myfile = json.load(infile)
     except FileNotFoundError:
         print("Source file not found. Specify a valid source file.")
         sys.exit(1)
-
+    
     if not os.path.exists(dir_target):
         os.makedirs(dir_target)
-
+    
     for i, cell in enumerate(myfile["cells"]):
         # -- collect source
         source_lines = cell["source"]
         # -- prepare headers
         header = "#+begin_src python :results output :exports both :session s1"
         tail = "#+end_src"
-
+    
         # -- collect outputs
         outputs = []
         if "outputs" in cell:
@@ -127,7 +131,7 @@ JSON
                     if "graphics" not in header: # add only first image to header
                         header = f"#+begin_src python :results file graphics :file {fpath} :exports both :session s1"
                 outputs.append(o)
-
+    
         # -- print source
         if cell["cell_type"] == "markdown":
             source_lines = [s.replace("<br>", "") for s in source_lines]
@@ -140,7 +144,7 @@ JSON
             PRINT("".join(source_lines))
             PRINT(tail)
             PRINT()
-
+    
         # -- print outputs - text and data
         for k, o in enumerate(outputs):
             # -- test
@@ -173,33 +177,31 @@ JSON
                 PRINT()
     f.close()
 
-## Output:
-
     #+begin_src python :results output :exports both :session s1
     import h5py
     import matplotlib.pyplot as plt
     import numpy as np
     #+end_src
-
+    
     * Чтение файла
     #+begin_src python :results output :exports both :session s1
     with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
         print(list(dataset.keys())[:10])
     #+end_src
-
+    
     #+RESULTS:
     : ['1609459200', '1609459800', '1609460400', '1609461000', '1609461600', '1609462200', '1609462800', '1609463400', '1609464000', '1609464600']
-
-
+    
+    
     #+begin_src python :results output :exports both :session s1
     with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
         print(list(dataset['1609459200'].keys()))
     #+end_src
-
+    
     #+RESULTS:
     : ['events', 'intensity', 'radial_velocity', 'reflectivity']
-
-
+    
+    
     #+begin_src python :results output :exports both :session s1
     with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
         print(f"events shape: {dataset['1609459200']['events'].shape}")
@@ -207,21 +209,21 @@ JSON
         print(f"radial_velocity shape: {dataset['1609459200']['radial_velocity'].shape}")
         print(f"reflectivity shape: {dataset['1609459200']['reflectivity'].shape}")
     #+end_src
-
+    
     #+RESULTS:
     : events shape: (252, 252)
     : intensity shape: (252, 252)
     : radial_velocity shape: (10, 252, 252)
     : reflectivity shape: (10, 252, 252)
-
-
+    
+    
     * Визуализация
     #+begin_src python :results output :exports both :session s1
     events = []
     intensity = []
     radial_velocity = []
     reflectivity = []
-
+    
     with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
         timestamps = sorted(dataset.keys())[:6]
         for timestamp in timestamps:
@@ -229,12 +231,12 @@ JSON
             intensity.append(np.array(dataset[timestamp]['intensity']))
             radial_velocity.append(np.array(dataset[timestamp]['radial_velocity']))
             reflectivity.append(np.array(dataset[timestamp]['reflectivity']))
-
+    
     events = np.array(events)
     intensity = np.array(intensity)
     radial_velocity = np.array(radial_velocity)
     reflectivity = np.array(reflectivity)
-
+    
     events[events == -2e6] = -2
     events[events == -1e6] = -1
     intensity[intensity == -2e6] = -2
@@ -244,7 +246,7 @@ JSON
     reflectivity[reflectivity == -2e6] = -2
     reflectivity[reflectivity == -1e6] = -1
     #+end_src
-
+    
     ** Погодные события
     #+begin_src python :results file graphics :file ./autoimgs/8_0.png :exports both :session s1
     _, axs = plt.subplots(1, len(events), figsize=(20, 2))
@@ -252,10 +254,10 @@ JSON
         axs[index].imshow(events[index])
         axs[index].set_title(timestamps[index])
     #+end_src
-
+    
     #+RESULTS:
     [[file:./autoimgs/8_0.png]] <Figure size 1440x144 with 6 Axes>
-
+    
     ** Интенсивность осадков
     #+begin_src python :results file graphics :file ./autoimgs/10_0.png :exports both :session s1
     _, axs = plt.subplots(1, len(intensity), figsize=(20, 2))
@@ -263,10 +265,10 @@ JSON
         axs[index].imshow(intensity[index])
         axs[index].set_title(timestamps[index])
     #+end_src
-
+    
     #+RESULTS:
     [[file:./autoimgs/10_0.png]] <Figure size 1440x144 with 6 Axes>
-
+    
     ** Радиальная скорость по высотам
     #+begin_src python :results file graphics :file ./autoimgs/12_0.png :exports both :session s1
     _, axs = plt.subplots(10, len(radial_velocity), figsize=(20, 20))
@@ -277,10 +279,10 @@ JSON
             axs[row, index].imshow(radial_velocity[index, row])
         axs[0, index].set_title(timestamps[index])
     #+end_src
-
+    
     #+RESULTS:
     [[file:./autoimgs/12_0.png]] <Figure size 1440x1440 with 60 Axes>
-
+    
     ** Отражаемость по высотам
     #+begin_src python :results file graphics :file ./autoimgs/14_0.png :exports both :session s1
     _, axs = plt.subplots(10, len(reflectivity), figsize=(20, 20))
@@ -291,6 +293,129 @@ JSON
             axs[row, index].imshow(reflectivity[index, row])
         axs[0, index].set_title(timestamps[index])
     #+end_src
-
+    
     #+RESULTS:
     [[file:./autoimgs/14_0.png]] <Figure size 1440x1440 with 60 Axes>
+
+Output:
+
+    #+begin_src python :results output :exports both :session s1
+    import h5py
+    import matplotlib.pyplot as plt
+    import numpy as np
+    #+end_src
+    
+    * Чтение файла
+    #+begin_src python :results output :exports both :session s1
+    with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
+        print(list(dataset.keys())[:10])
+    #+end_src
+    
+    #+RESULTS:
+    : ['1609459200', '1609459800', '1609460400', '1609461000', '1609461600', '1609462200', '1609462800', '1609463400', '1609464000', '1609464600']
+    
+    
+    #+begin_src python :results output :exports both :session s1
+    with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
+        print(list(dataset['1609459200'].keys()))
+    #+end_src
+    
+    #+RESULTS:
+    : ['events', 'intensity', 'radial_velocity', 'reflectivity']
+    
+    
+    #+begin_src python :results output :exports both :session s1
+    with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
+        print(f"events shape: {dataset['1609459200']['events'].shape}")
+        print(f"intensity shape: {dataset['1609459200']['intensity'].shape}")
+        print(f"radial_velocity shape: {dataset['1609459200']['radial_velocity'].shape}")
+        print(f"reflectivity shape: {dataset['1609459200']['reflectivity'].shape}")
+    #+end_src
+    
+    #+RESULTS:
+    : events shape: (252, 252)
+    : intensity shape: (252, 252)
+    : radial_velocity shape: (10, 252, 252)
+    : reflectivity shape: (10, 252, 252)
+    
+    
+    * Визуализация
+    #+begin_src python :results output :exports both :session s1
+    events = []
+    intensity = []
+    radial_velocity = []
+    reflectivity = []
+    
+    with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
+        timestamps = sorted(dataset.keys())[:6]
+        for timestamp in timestamps:
+            events.append(np.array(dataset[timestamp]['events']))
+            intensity.append(np.array(dataset[timestamp]['intensity']))
+            radial_velocity.append(np.array(dataset[timestamp]['radial_velocity']))
+            reflectivity.append(np.array(dataset[timestamp]['reflectivity']))
+    
+    events = np.array(events)
+    intensity = np.array(intensity)
+    radial_velocity = np.array(radial_velocity)
+    reflectivity = np.array(reflectivity)
+    
+    events[events == -2e6] = -2
+    events[events == -1e6] = -1
+    intensity[intensity == -2e6] = -2
+    intensity[intensity == -1e6] = -1
+    radial_velocity[radial_velocity == -2e6] = -2
+    radial_velocity[radial_velocity == -1e6] = -1
+    reflectivity[reflectivity == -2e6] = -2
+    reflectivity[reflectivity == -1e6] = -1
+    #+end_src
+    
+    ** Погодные события
+    #+begin_src python :results file graphics :file ./autoimgs/8_0.png :exports both :session s1
+    _, axs = plt.subplots(1, len(events), figsize=(20, 2))
+    for index in range(len(events)):
+        axs[index].imshow(events[index])
+        axs[index].set_title(timestamps[index])
+    #+end_src
+    
+    #+RESULTS:
+    [[file:./autoimgs/8_0.png]] <Figure size 1440x144 with 6 Axes>
+    
+    ** Интенсивность осадков
+    #+begin_src python :results file graphics :file ./autoimgs/10_0.png :exports both :session s1
+    _, axs = plt.subplots(1, len(intensity), figsize=(20, 2))
+    for index in range(len(intensity)):
+        axs[index].imshow(intensity[index])
+        axs[index].set_title(timestamps[index])
+    #+end_src
+    
+    #+RESULTS:
+    [[file:./autoimgs/10_0.png]] <Figure size 1440x144 with 6 Axes>
+    
+    ** Радиальная скорость по высотам
+    #+begin_src python :results file graphics :file ./autoimgs/12_0.png :exports both :session s1
+    _, axs = plt.subplots(10, len(radial_velocity), figsize=(20, 20))
+    for index in range(len(radial_velocity)):
+        for row in range(10):
+            if index == 0:
+                axs[row, index].set_ylabel(f'{row + 1} км')
+            axs[row, index].imshow(radial_velocity[index, row])
+        axs[0, index].set_title(timestamps[index])
+    #+end_src
+    
+    #+RESULTS:
+    [[file:./autoimgs/12_0.png]] <Figure size 1440x1440 with 60 Axes>
+    
+    ** Отражаемость по высотам
+    #+begin_src python :results file graphics :file ./autoimgs/14_0.png :exports both :session s1
+    _, axs = plt.subplots(10, len(reflectivity), figsize=(20, 20))
+    for index in range(len(reflectivity)):
+        for row in range(10):
+            if index == 0:
+                axs[row, index].set_ylabel(f'{row + 1} км')
+            axs[row, index].imshow(reflectivity[index, row])
+        axs[0, index].set_title(timestamps[index])
+    #+end_src
+    
+    #+RESULTS:
+    [[file:./autoimgs/14_0.png]] <Figure size 1440x1440 with 60 Axes>
+

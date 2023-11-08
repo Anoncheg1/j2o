@@ -25,11 +25,14 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
         sys.exit(1)
 
 
+    # -- -- parse file -- --
+    language_ofkernels = myfile["metadata"]["kernelspec"]["language"]
+
     for i, cell in enumerate(myfile["cells"]):
         # -- collect source
         source_lines = cell["source"]
         # -- prepare headers
-        header = "#+begin_src python :results output :exports both :session s1"
+        header = f"#+begin_src {language_ofkernels} :results output :exports both :session s1"
         tail = "#+end_src"
 
         # -- collect outputs
@@ -57,7 +60,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
                         o["data_descr"] = output["data"]["text/plain"]
                     # - change header for image
                     if "graphics" not in header: # add only first image to header
-                        header = f"#+begin_src python :results file graphics :file {local_image_file_path} :exports both :session s1"
+                        header = f"#+begin_src {language_ofkernels} :results file graphics :file {local_image_file_path} :exports both :session s1"
                 outputs.append(o)
 
         # -- print source
