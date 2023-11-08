@@ -105,21 +105,6 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
                 PRINT()
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser(
-        description="Convert a Jupyter notebook to Org file (Emacs) and vice versa",
-        usage="j2o myfile.py")
-    parser.add_argument("-j", "--jupfile",
-                        help="Jupyter file")
-    parser.add_argument("-o", "--orgfile",
-                        help="Target filename of Org file. If not specified, " +
-                        "it will use the filename of the Jupyter file and append .ipynb")
-    parser.add_argument("-w", "--overwrite",
-                        action="store_true",
-                        help="Flag whether to overwrite existing target file.")
-    return parser.parse_args()
-
-
 def j2p_main(source_file_jupyter: str, target_file_org: str = None, overwrite: bool = False):
     # print(source_file_jupyter, target_file_org, overwrite)
     s_path = os.path.dirname(target_file_org)
@@ -140,9 +125,29 @@ def j2p_main(source_file_jupyter: str, target_file_org: str = None, overwrite: b
         jupyter2org(f, source_file_jupyter, target_images_dir)
 
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Convert a Jupyter notebook to Org file (Emacs) and vice versa",
+        usage="j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]")
+    parser.add_argument("jupfile_", nargs='?', default=None,
+                        help="Jupyter file")
+    parser.add_argument("-j", "--jupfile",
+                        help="Jupyter file")
+    parser.add_argument("-o", "--orgfile",
+                        help="Target filename of Org file. If not specified, " +
+                        "it will use the filename of the Jupyter file and append .ipynb")
+    parser.add_argument("-w", "--overwrite",
+                        action="store_true",
+                        help="Flag whether to overwrite existing target file.")
+    return parser.parse_args()
+
+
 def main():
     args = parse_arguments()
-    j2p_main(args.jupfile, args.orgfile, args.overwrite)
+    if not args.jupfile_ and not args.jupfile:
+        print('No input file provided')
+    jupf = args.jupfile_ if args.jupfile_ else args.jupfile
+    j2p_main(jupf, args.orgfile, args.overwrite)
 
 
 if __name__=="__main__":
