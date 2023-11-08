@@ -8,12 +8,11 @@ import logging
 
 
 # source_filename = './draw-samples.ipynb'
-DIR_TARGET = './autoimgs'
+DIR_AUTOIMGS = './autoimgs'
 org_babel_min_lines_for_block_output = 10 # ob-core.el org-babel-min-lines-for-block-output
 
 
-def jupyter2org(f:TextIOWrapper, source_file_jupyter: str):
-
+def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: str): # TODO save images to target_images_dir
     # PRINT = lambda *x: print("".join(x))
     # f = open("out.org", "w")
     PRINT = lambda *x: f.write("".join(x) + '\n')
@@ -47,17 +46,18 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str):
                     # - 1) save image 2) insert link to output text 3) format source block header with link
                     # - decode image and remember link to file
                     b64img = base64.b64decode(output["data"]["image/png"])
-                    fpath = os.path.join(DIR_TARGET, f'{i}_{j}.png')
-                    o["file_path"] = fpath
+                    filen = f'{i}_{j}.png'
+                    local_image_file_path = os.path.join(DIR_AUTOIMGS, filen)
+                    o["file_path"] = local_image_file_path
                     # - save to file
-                    with open(fpath, 'wb') as b64imgfile:
+                    with open(os.path.join(target_images_dir, filen), 'wb') as b64imgfile: # real path
                         b64imgfile.write(b64img)
                     # - add description for link
                     if "text/plain" in output["data"]:
                         o["data_descr"] = output["data"]["text/plain"]
                     # - change header for image
                     if "graphics" not in header: # add only first image to header
-                        header = f"#+begin_src python :results file graphics :file {fpath} :exports both :session s1"
+                        header = f"#+begin_src python :results file graphics :file {local_image_file_path} :exports both :session s1"
                 outputs.append(o)
 
         # -- print source
@@ -105,7 +105,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str):
                 PRINT()
 
 
-def parse():
+def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Convert a Jupyter notebook to Org file (Emacs) and vice versa",
         usage="j2o myfile.py")
@@ -120,27 +120,30 @@ def parse():
     return parser.parse_args()
 
 
-def main(source_file_jupyter: str, target_file_org: str = None, overwrite: bool = False):
-    """"""
-    print(source_file_jupyter, target_file_org, overwrite)
+def j2p_main(source_file_jupyter: str, target_file_org: str = None, overwrite: bool = False):
+    # print(source_file_jupyter, target_file_org, overwrite)
+    s_path = os.path.dirname(target_file_org)
+    target_images_dir = os.path.normpath(os.path.join(s_path, DIR_AUTOIMGS))
     # - create directory for images:
-    if not os.path.exists(DIR_TARGET):
-        os.makedirs(DIR_TARGET)
+    if not os.path.exists(target_images_dir):
+        os.makedirs(target_images_dir)
     # - create target_file_org
     if target_file_org is None:
         target_file_org = os.path.splitext(source_file_jupyter)[0] + '.org'
-
     # - overwrite?
     if not overwrite:
         if os.path.isfile(target_file_org):
             logging.critical("File already exist.")
             return
-
     # - create target file and start conversion
     with open(target_file_org, "w") as f:
-        jupyter2org(f, source_file_jupyter)
+        jupyter2org(f, source_file_jupyter, target_images_dir)
+
+
+def main():
+    args = parse_arguments()
+    j2p_main(args.jupfile, args.orgfile, args.overwrite)
 
 
 if __name__=="__main__":
-    args = parse()
-    main(args.jupfile, args.orgfile, args.overwrite)
+    main()

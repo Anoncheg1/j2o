@@ -21,9 +21,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
-    "pytest"
-]
+test = [ "pytest" ]
 
 [project.urls]
 "Homepage" = "https://github.com/Anoncheg1/j2o"
@@ -32,5 +30,5 @@ test = [
 [project.scripts]
 mfs = "micro_file_server.__main__:main"
 
-# [pytest]
-# testpaths = "test"
+[tool.pytest.ini_options]
+pythonpath = [ "." ]
