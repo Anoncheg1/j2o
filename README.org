@@ -2,7 +2,7 @@
 Converter from Jupyter to Org file format without any dependencies.
 
 Tested for nbformat: 4.2.
-* usage
+* Command line usage
 #+begin_src text
 usage: j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]
 
