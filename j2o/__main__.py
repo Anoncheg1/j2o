@@ -110,8 +110,11 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
 
 def j2p_main(source_file_jupyter: str, target_file_org: str = None, overwrite: bool = False):
     # print(source_file_jupyter, target_file_org, overwrite)
-    s_path = os.path.dirname(target_file_org)
-    target_images_dir = os.path.normpath(os.path.join(s_path, DIR_AUTOIMGS))
+    if target_file_org:
+        s_path = os.path.dirname(target_file_org)
+        target_images_dir = os.path.normpath(os.path.join(s_path, DIR_AUTOIMGS))
+    else:
+        target_images_dir = DIR_AUTOIMGS
     # - create directory for images:
     if not os.path.exists(target_images_dir):
         os.makedirs(target_images_dir)
