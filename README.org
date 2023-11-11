@@ -8,6 +8,9 @@ I don't want to install Jupyter core and nbconver or pandoc with 164
 Tested for nbformat: 4.2.
 
 TODO: make reverse convrter.
+
+https://pypi.org/project/j2o/
+
 * Command line usage
 #+begin_src text
 usage: j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]
@@ -26,7 +29,10 @@ options:
                         use the filename of the Jupyter file and append .ipynb
   -w, --overwrite       Flag whether to overwrite existing target file.
 #+end_src
-* review of format for ipynb
+* Other useful projects
+- p2j https://pypi.org/project/p2j/ https://github.com/remykarem/python2jupyter
+- https://github.com/jkitchin/ox-ipynb
+* Review of format for ipynb
 JSON
 #+begin_src json
 {
@@ -49,7 +55,7 @@ JSON
 }
 #+end_src
 
-* code development
+* Code development
 #+begin_src python :results output :exports both :session s1 :timeout 90
 import sys
 import json
