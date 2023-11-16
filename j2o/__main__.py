@@ -31,7 +31,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
     for i, cell in enumerate(myfile["cells"]):
         # -- collect source
         source_lines = cell["source"]
-        # -- prepare headers
+        # -- ORG SRC block header
         header = f"#+begin_src {language_ofkernels} :results output :exports both :session s1"
         tail = "#+end_src"
 
@@ -60,6 +60,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
                         o["data_descr"] = output["data"]["text/plain"]
                     # - change header for image
                     if "graphics" not in header: # add only first image to header
+                        # -- ORG SRC block header
                         header = f"#+begin_src {language_ofkernels} :results file graphics :file {local_image_file_path} :exports both :session s1"
                 outputs.append(o)
 
