@@ -132,7 +132,12 @@ def j2p_main(source_file_jupyter: str, target_file_org: str = None, overwrite: b
         jupyter2org(f, source_file_jupyter, target_images_dir)
 
 
-def parse_arguments():
+# def parse_arguments():
+
+# return parser.parse_args()
+
+
+def main():
     parser = argparse.ArgumentParser(
         description="Convert a Jupyter notebook to Org file (Emacs) and vice versa",
         usage="j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]")
@@ -146,15 +151,12 @@ def parse_arguments():
     parser.add_argument("-w", "--overwrite",
                         action="store_true",
                         help="Flag whether to overwrite existing target file.")
-    return parser.parse_args()
-
-
-def main():
-    args = parse_arguments()
-    if not args.jupfile_ and not args.jupfile:
-        print('No input file provided')
+    args = parser.parse_args()
     jupf = args.jupfile_ if args.jupfile_ else args.jupfile
-    j2p_main(jupf, args.orgfile, args.overwrite)
+    if not jupf:
+        parser.parse_args(["-h"])
+    else:
+        j2p_main(jupf, args.orgfile, args.overwrite)
 
 
 if __name__=="__main__":
