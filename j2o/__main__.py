@@ -26,7 +26,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
 
 
     # -- -- parse file -- --
-    language_ofkernels = myfile["metadata"]["kernelspec"]["language"]
+    language_ofkernels = myfile["metadata"]["language_info"]["name"]
 
     for i, cell in enumerate(myfile["cells"]):
         # -- collect source
