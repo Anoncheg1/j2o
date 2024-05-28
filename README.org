@@ -55,6 +55,10 @@ JSON
 }
 #+end_src
 
+* How it works
+1) Loops through "cells".
+2) Extract "source"
+3) add Org header and tail around source ("#+begin_src python ...", "#+end_src")
 * Code development
 #+begin_src python :results output :exports both :session s1 :timeout 90
 import sys
