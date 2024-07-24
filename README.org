@@ -1,11 +1,8 @@
 * j2o
 Converter from Jupyter to Org file format without any dependencies.
 
-I don't want to install Jupyter core and nbconver or pandoc with 164
- dependencies just to be able to convert simple JSON format, that is
- why I just wrote coverter from scratch.
-
-Tested for nbformat: 4.2.
+Without this package your only alternative is to use nbconver or pandoc with 164
+ dependencies just to be able to convert simple JSON format.
 
 TODO: make reverse convrter.
 
@@ -29,10 +26,15 @@ options:
                         use the filename of the Jupyter file and append .ipynb
   -w, --overwrite       Flag whether to overwrite existing target file.
 #+end_src
-* Other useful projects
+* How this works
+1) Loops through "cells".
+2) Extract "source"
+3) add Org header and tail around source ("#+begin_src python ...", "#+end_src")
+
+* Info: Other useful projects
 - p2j https://pypi.org/project/p2j/ https://github.com/remykarem/python2jupyter
 - https://github.com/jkitchin/ox-ipynb
-* Review of format for ipynb
+* Info: Format of ipynb
 JSON
 #+begin_src json
 {
@@ -55,10 +57,7 @@ JSON
 }
 #+end_src
 
-* How it works
-1) Loops through "cells".
-2) Extract "source"
-3) add Org header and tail around source ("#+begin_src python ...", "#+end_src")
 * features
 - in markdown cells conversion: source blocks, ‘#’ to ‘*’.
 - code cells: images
+- Tested for nbformat: 4.2.

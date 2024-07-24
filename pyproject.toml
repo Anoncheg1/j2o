@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "j2o"
 readme = "README.md"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Anoncheg1" }
 ]
@@ -28,7 +28,7 @@ test = [ "pytest" ]
 "Bug Tracker" = "https://github.com/Anoncheg1/j2o/issues"
 
 [project.scripts]
-mfs = "micro_file_server.__main__:main"
+j2o = "micro_file_server.__main__:main"
 
 [tool.pytest.ini_options]
 pythonpath = [ "." ]
