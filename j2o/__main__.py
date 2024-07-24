@@ -1,3 +1,7 @@
+## How it works:
+# We read from one file and write to other and save image to other
+# folder. All in one loop over jupyter cells.
+
 import argparse
 import sys
 import json
@@ -5,17 +9,70 @@ import base64
 import os
 from io import TextIOWrapper
 import logging
+import re
 
+def markdown_to_org(markdown_lines: list[str]) -> list[str]:
+    org_lines = []
+
+    # Convert headers
+    header_pattern = re.compile(r'^(#+) (.+)$')
+    for line in markdown_lines:
+        match = header_pattern.match(line)
+        if match:
+            level = len(match.group(1))
+            header_text = match.group(2)
+            org_lines.append('*' * level + ' ' + header_text)
+        else:
+            org_lines.append(line)
+
+
+
+    # Convert source blocks
+    org_lines2 = []
+    source_block_pattern = re.compile(r'^```[ ]*(\w+)[ ]*$')
+    in_source_block = False
+    source_block_language = ''
+    for line in org_lines:
+
+        if in_source_block:
+            if line.strip() == '```':
+                in_source_block = False
+                org_lines2.append('#+end_src')
+            else:
+                org_lines2.append(line)
+        else:
+            m = source_block_pattern.match(line)
+            if m:
+                in_source_block = True
+                source_block_language = m.group(1)
+                org_lines2.append(f'#+begin_src {source_block_language} :results none :exports code :eval no')
+            else:
+                org_lines2.append(line)
+
+    org_lines2 = [s.replace("<br>", "") for s in org_lines2]
+
+
+    return org_lines2
 
 # source_filename = './draw-samples.ipynb'
 DIR_AUTOIMGS = './autoimgs'
 org_babel_min_lines_for_block_output = 10 # ob-core.el org-babel-min-lines-for-block-output
 
 
-def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: str): # TODO save images to target_images_dir
+def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
+                target_images_dir: str):
+    "Main loop."
+
     # PRINT = lambda *x: print("".join(x))
     # f = open("out.org", "w")
-    PRINT = lambda *x: f.write("".join(x) + '\n')
+    def PRINT(*args):
+        "Write to target functiion."
+        if args and isinstance(args[0], list):
+            lines = [e for a in args for e in a]
+            return f.write("\n".join([x.rstrip() for x in lines]) + '\n')
+        else:
+            return f.write("".join(args) + '\n')
+    # PRINT = lambda *x: f.write("".join(x) + '\n')
 
     try:
         with open(source_file_jupyter, "r", encoding="utf-8") as infile:
@@ -23,7 +80,6 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
     except FileNotFoundError:
         print("Source file not found. Specify a valid source file.")
         sys.exit(1)
-
 
     # -- -- parse file -- --
     language_ofkernels = myfile["metadata"]["language_info"]["name"]
@@ -59,21 +115,22 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
                     if "text/plain" in output["data"]:
                         o["data_descr"] = output["data"]["text/plain"]
                     # - change header for image
-                    if "graphics" not in header: # add only first image to header
+                    if "graphics" not in header:  # add only first image to header
                         # -- ORG SRC block header
                         header = f"#+begin_src {language_ofkernels} :results file graphics :file {local_image_file_path} :exports both :session s1"
                 outputs.append(o)
 
-        # -- print source
+        # -- print markdown / code
         if cell["cell_type"] == "markdown":
-            source_lines = [s.replace("<br>", "") for s in source_lines]
-            PRINT(source_lines[0].replace("#", "*"))
-            if len(source_lines) > 1:
-                PRINT("".join(source_lines[1:]))
+            PRINT(markdown_to_org(source_lines))
+            # source_lines = [s.replace("<br>", "") for s in source_lines]
+            # PRINT(source_lines[0].replace("#", "*"))
+            # if len(source_lines) > 1:
+            #     PRINT(source_lines[1:])
             # PRINT('# asd')
-        else: #== "code":
+        else:  # == "code":
             PRINT(header)
-            PRINT("".join(source_lines))
+            PRINT(source_lines)
             PRINT(tail)
             PRINT()
 
@@ -105,11 +162,12 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str, target_images_dir: st
                 # - PRINT link
                 # desc = "" if o["data_descr"] is None else "[" + "".join(o["data_descr"]) + "]"
                 desc = "" if o["data_descr"] is None else "".join(o["data_descr"])
-                PRINT("[[file:" + o["file_path"] +  "]] " + desc)
+                PRINT("[[file:" + o["file_path"] + "]] " + desc)
                 PRINT()
 
 
-def j2p_main(source_file_jupyter: str, target_file_org: str = None, overwrite: bool = False):
+def j2p_main(source_file_jupyter: str, target_file_org: str = None,
+             overwrite: bool = False):
     # print(source_file_jupyter, target_file_org, overwrite)
     if target_file_org:
         s_path = os.path.dirname(target_file_org)
@@ -159,5 +217,5 @@ def main():
         j2p_main(jupf, args.orgfile, args.overwrite)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

@@ -2,7 +2,7 @@ from filecmp import cmp
 import os
 
 #
-from j2o.__main__ import jupyter2org, DIR_AUTOIMGS
+from j2o.__main__ import jupyter2org, DIR_AUTOIMGS, markdown_to_org
 
 jupyter_4_2 = "./tests/draw-samples.ipynb"
 jupyter_4_2_saved = "./tests/draw-samples.org"
@@ -35,5 +35,32 @@ def test_converter():
     print("success")
 
 
-if __name__=="__main__":
+def test_markdown():
+    markdown_lines = [
+        '# Header 1',
+        'Some text',
+        '## Header 2',
+        'More text',
+        '',
+        '``` python ',
+        'print("Hello, world!")',
+        '```',
+        'Even more text'
+    ]
+    org_lines = [
+        '* Header 1',
+        'Some text',
+        '** Header 2',
+        'More text', '',
+        '#+begin_src python :results none :exports code :eval no',
+        'print("Hello, world!")',
+        '#+end_src',
+        'Even more text']
+    print(markdown_to_org(markdown_lines))
+    for m, o in zip(markdown_to_org(markdown_lines), org_lines):
+        assert (m == o)
+    # print(org_lines)
+
+
+if __name__ == "__main__":
     test_converter()
