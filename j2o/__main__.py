@@ -1,3 +1,4 @@
+"""This is main and single file of j2o tool."""
 ## How it works:
 # We read from one file and write to other and save image to other
 # folder. All in one loop over jupyter cells.
@@ -12,6 +13,7 @@ import logging
 import re
 
 def markdown_to_org(markdown_lines: list[str]) -> list[str]:
+    "Markdown strings to Org mode strings."
     org_lines = []
 
     # Convert headers
@@ -55,8 +57,8 @@ def markdown_to_org(markdown_lines: list[str]) -> list[str]:
     return org_lines2
 
 # source_filename = './draw-samples.ipynb'
-DIR_AUTOIMGS = './autoimgs'
-org_babel_min_lines_for_block_output = 10 # ob-core.el org-babel-min-lines-for-block-output
+# ob-core.el org-babel-min-lines-for-block-output
+ORG_BABEL_MIN_LINES_FOR_BLOCK_OUTPUT = 10
 
 
 def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
@@ -70,8 +72,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
         if args and isinstance(args[0], list):
             lines = [e for a in args for e in a]
             return f.write("\n".join([x.rstrip() for x in lines]) + '\n')
-        else:
-            return f.write("".join(args) + '\n')
+        return f.write("".join(args) + '\n')
     # PRINT = lambda *x: f.write("".join(x) + '\n')
 
     try:
@@ -95,21 +96,23 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
         outputs = []
         if "outputs" in cell:
             for j, output in enumerate(cell["outputs"]):
-                o = {"text": None, "file_path": None, "data_descr": None}
+                o: dict[str, str | None] = {"text": None, "file_path": None, "data_descr": None}
                 # -- test
                 if "text" in output:
                     outputs_text = output["text"]
                     o["text"] = outputs_text
                 # -- data
                 if "data" in output and "image/png" in output["data"]:
-                    # - 1) save image 2) insert link to output text 3) format source block header with link
-                    # - decode image and remember link to file
+                    # - 1) save image
+                    # - 2) insert link to output text
+                    # - 3) format source block header with link
+                    # decode image and specify path to a file:
                     b64img = base64.b64decode(output["data"]["image/png"])
                     filen = f'{i}_{j}.png'
-                    local_image_file_path = os.path.join(DIR_AUTOIMGS, filen)
-                    o["file_path"] = local_image_file_path
-                    # - save to file
-                    with open(os.path.join(target_images_dir, filen), 'wb') as b64imgfile: # real path
+                    image_file_path = os.path.join(target_images_dir, filen)
+                    o["file_path"] = image_file_path
+                    # - save to image
+                    with open(image_file_path, 'wb') as b64imgfile: # real path
                         b64imgfile.write(b64img)
                     # - add description for link
                     if "text/plain" in output["data"]:
@@ -117,7 +120,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
                     # - change header for image
                     if "graphics" not in header:  # add only first image to header
                         # -- ORG SRC block header
-                        header = f"#+begin_src {language_ofkernels} :results file graphics :file {local_image_file_path} :exports both :session s1"
+                        header = f"#+begin_src {language_ofkernels} :results file graphics :file {image_file_path} :exports both :session s1"
                 outputs.append(o)
 
         # -- print markdown / code
@@ -139,7 +142,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
             # -- test
             # o = {"text": None, "data_file": None, "data_descr": None}
             if o["text"] is not None:
-                if len(o["text"]) <= org_babel_min_lines_for_block_output:
+                if len(o["text"]) <= ORG_BABEL_MIN_LINES_FOR_BLOCK_OUTPUT:
                     PRINT("#+RESULTS:" + (f"{i}_{k}" if k > 0 else "")) # add index for several RESULT
                     PRINT("".join([": " + t for t in o["text"]])) # .startswith()
                     PRINT()
@@ -166,36 +169,35 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
                 PRINT()
 
 
-def j2p_main(source_file_jupyter: str, target_file_org: str = None,
+def j2p_main(source_file_jupyter: str, target_file_org = str | None,
              overwrite: bool = False):
+    "Prepare target file and directory for conversion."
     # print(source_file_jupyter, target_file_org, overwrite)
+    source_file_name = os.path.splitext(source_file_jupyter)[0]
+    image_dir = source_file_name[:3] + '-' + source_file_name[-3:] + '-imgs'
     if target_file_org:
         s_path = os.path.dirname(target_file_org)
-        target_images_dir = os.path.normpath(os.path.join(s_path, DIR_AUTOIMGS))
+        target_images_dir = os.path.normpath(os.path.join(s_path, image_dir))
     else:
-        target_images_dir = DIR_AUTOIMGS
+        target_images_dir = "./" + image_dir
     # - create directory for images:
     if not os.path.exists(target_images_dir):
         os.makedirs(target_images_dir)
     # - create target_file_org
     if target_file_org is None:
-        target_file_org = os.path.splitext(source_file_jupyter)[0] + '.org'
+        target_file_org = source_file_name + '.org'
     # - overwrite?
     if not overwrite:
         if os.path.isfile(target_file_org):
             logging.critical("File already exist.")
             return
     # - create target file and start conversion
-    with open(target_file_org, "w") as f:
+    with open(target_file_org, "wt", encoding="utf-8") as f:
         jupyter2org(f, source_file_jupyter, target_images_dir)
 
 
-# def parse_arguments():
-
-# return parser.parse_args()
-
-
 def main():
+    "CLI interface."
     parser = argparse.ArgumentParser(
         description="Convert a Jupyter notebook to Org file (Emacs) and vice versa",
         usage="j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]")
