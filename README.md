@@ -1,32 +1,32 @@
 
 # Table of Contents
 
-1.  [j2o](#org0ada202)
-2.  [Command line usage](#orgcd3c96d)
-3.  [Other useful projects](#org4772b96)
-4.  [Review of format for ipynb](#org9e2dc55)
-5.  [How it works](#org4355db8)
-6.  [features](#org2ac1c27)
+1.  [j2o](#orgbacc8a7)
+2.  [Command line usage](#orgc774cb4)
+3.  [How this works](#org1bf3c7a)
+4.  [Info: Other useful projects](#orgcb52261)
+5.  [Info: Format of ipynb](#orge84f6b3)
+6.  [features](#orge5a8edc)
+
+\![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push))
+\![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release))
 
 
-<a id="org0ada202"></a>
+<a id="orgbacc8a7"></a>
 
 # j2o
 
 Converter from Jupyter to Org file format without any dependencies.
 
-I don't want to install Jupyter core and nbconver or pandoc with 164
- dependencies just to be able to convert simple JSON format, that is
- why I just wrote coverter from scratch.
-
-Tested for nbformat: 4.2.
+Without this package your only alternative is to use nbconver or pandoc with 164
+ dependencies just to be able to convert simple JSON format.
 
 TODO: make reverse convrter.
 
 <https://pypi.org/project/j2o/>
 
 
-<a id="orgcd3c96d"></a>
+<a id="orgc774cb4"></a>
 
 # Command line usage
 
@@ -47,17 +47,26 @@ TODO: make reverse convrter.
       -w, --overwrite       Flag whether to overwrite existing target file.
 
 
-<a id="org4772b96"></a>
+<a id="org1bf3c7a"></a>
 
-# Other useful projects
+# How this works
+
+1.  Loops through "cells".
+2.  Extract "source"
+3.  add Org header and tail around source ("#+begin\_src python &#x2026;", "#+end\_src")
+
+
+<a id="orgcb52261"></a>
+
+# Info: Other useful projects
 
 -   p2j <https://pypi.org/project/p2j/> <https://github.com/remykarem/python2jupyter>
 -   <https://github.com/jkitchin/ox-ipynb>
 
 
-<a id="org9e2dc55"></a>
+<a id="orge84f6b3"></a>
 
-# Review of format for ipynb
+# Info: Format of ipynb
 
 JSON
 
@@ -81,19 +90,11 @@ JSON
     }
 
 
-<a id="org4355db8"></a>
-
-# How it works
-
-1.  Loops through "cells".
-2.  Extract "source"
-3.  add Org header and tail around source ("#+begin\_src python &#x2026;", "#+end\_src")
-
-
-<a id="org2ac1c27"></a>
+<a id="orge5a8edc"></a>
 
 # features
 
 -   in markdown cells conversion: source blocks, ‘#’ to ‘\*’.
 -   code cells: images
+-   Tested for nbformat: 4.2.
 
