@@ -173,19 +173,23 @@ def j2p_main(source_file_jupyter: str, target_file_org = str | None,
              overwrite: bool = False):
     "Prepare target file and directory for conversion."
     # print(source_file_jupyter, target_file_org, overwrite)
-    source_file_name = os.path.splitext(source_file_jupyter)[0]
-    image_dir = source_file_name[:3] + '-' + source_file_name[-3:] + '-imgs'
+
     if target_file_org:
-        s_path = os.path.dirname(target_file_org)
-        target_images_dir = os.path.normpath(os.path.join(s_path, image_dir))
-    else:
-        target_images_dir = "./" + image_dir
+        t_path, file_name =  os.path.split(target_file_org)  # "/var/va.org" - > ('/var', 'va.org')
+    else: # use source file
+        t_path, file_name =  os.path.split(source_file_jupyter)  # "/var/va.org" - > ('/var', 'va.org')
+
+    file_name_short = os.path.splitext(file_name)[0] # # "va.org" -> ('va', '.org')
+    image_dir = file_name_short[:3] + '-' + file_name_short[-3:] + '-imgs'
+    target_images_dir = os.path.normpath(os.path.join(t_path, image_dir))
+
+    if target_file_org is None:
+        target_file_org = os.path.join(t_path, file_name_short) + '.org'
+
     # - create directory for images:
     if not os.path.exists(target_images_dir):
         os.makedirs(target_images_dir)
-    # - create target_file_org
-    if target_file_org is None:
-        target_file_org = source_file_name + '.org'
+
     # - overwrite?
     if not overwrite:
         if os.path.isfile(target_file_org):

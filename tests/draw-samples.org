@@ -69,7 +69,7 @@ reflectivity[reflectivity == -1e6] = -1
 #+end_src
 
 ** Погодные события
-#+begin_src python :results file graphics :file ./autoimgs/8_0.png :exports both :session s1
+#+begin_src python :results file graphics :file /tmp/a-a-imgs/8_0.png :exports both :session s1
 _, axs = plt.subplots(1, len(events), figsize=(20, 2))
 for index in range(len(events)):
     axs[index].imshow(events[index])
@@ -77,10 +77,10 @@ for index in range(len(events)):
 #+end_src
 
 #+RESULTS:
-[[file:./autoimgs/8_0.png]] <Figure size 1440x144 with 6 Axes>
+[[file:/tmp/a-a-imgs/8_0.png]] <Figure size 1440x144 with 6 Axes>
 
 ** Интенсивность осадков
-#+begin_src python :results file graphics :file ./autoimgs/10_0.png :exports both :session s1
+#+begin_src python :results file graphics :file /tmp/a-a-imgs/10_0.png :exports both :session s1
 _, axs = plt.subplots(1, len(intensity), figsize=(20, 2))
 for index in range(len(intensity)):
     axs[index].imshow(intensity[index])
@@ -88,10 +88,10 @@ for index in range(len(intensity)):
 #+end_src
 
 #+RESULTS:
-[[file:./autoimgs/10_0.png]] <Figure size 1440x144 with 6 Axes>
+[[file:/tmp/a-a-imgs/10_0.png]] <Figure size 1440x144 with 6 Axes>
 
 ** Радиальная скорость по высотам
-#+begin_src python :results file graphics :file ./autoimgs/12_0.png :exports both :session s1
+#+begin_src python :results file graphics :file /tmp/a-a-imgs/12_0.png :exports both :session s1
 _, axs = plt.subplots(10, len(radial_velocity), figsize=(20, 20))
 for index in range(len(radial_velocity)):
     for row in range(10):
@@ -102,10 +102,10 @@ for index in range(len(radial_velocity)):
 #+end_src
 
 #+RESULTS:
-[[file:./autoimgs/12_0.png]] <Figure size 1440x1440 with 60 Axes>
+[[file:/tmp/a-a-imgs/12_0.png]] <Figure size 1440x1440 with 60 Axes>
 
 ** Отражаемость по высотам
-#+begin_src python :results file graphics :file ./autoimgs/14_0.png :exports both :session s1
+#+begin_src python :results file graphics :file /tmp/a-a-imgs/14_0.png :exports both :session s1
 _, axs = plt.subplots(10, len(reflectivity), figsize=(20, 20))
 for index in range(len(reflectivity)):
     for row in range(10):
@@ -116,5 +116,5 @@ for index in range(len(reflectivity)):
 #+end_src
 
 #+RESULTS:
-[[file:./autoimgs/14_0.png]] <Figure size 1440x1440 with 60 Axes>
+[[file:/tmp/a-a-imgs/14_0.png]] <Figure size 1440x1440 with 60 Axes>
 
