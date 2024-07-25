@@ -127,11 +127,6 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
         if cell["cell_type"] == "markdown":
             PRINT(markdown_to_org(source_lines))
             # PRINT()
-            # source_lines = [s.replace("<br>", "") for s in source_lines]
-            # PRINT(source_lines[0].replace("#", "*"))
-            # if len(source_lines) > 1:
-            #     PRINT(source_lines[1:])
-            # PRINT('# asd')
         else:  # == "code":
             PRINT(header)
             PRINT(source_lines)
