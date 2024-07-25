@@ -1,3 +1,6 @@
+![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push))
+![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release))
+
 
 # Table of Contents
 
@@ -7,9 +10,6 @@
 4.  [Info: Other useful projects](#orgcb52261)
 5.  [Info: Format of ipynb](#orge84f6b3)
 6.  [features](#orge5a8edc)
-
-\![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push))
-\![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release))
 
 
 <a id="orgbacc8a7"></a>
@@ -31,12 +31,12 @@ TODO: make reverse convrter.
 # Command line usage
 
     usage: j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]
-    
+
     Convert a Jupyter notebook to Org file (Emacs) and vice versa
-    
+
     positional arguments:
       jupfile_              Jupyter file
-    
+
     options:
       -h, --help            show this help message and exit
       -j JUPFILE, --jupfile JUPFILE
@@ -97,4 +97,3 @@ JSON
 -   in markdown cells conversion: source blocks, ‘#’ to ‘\*’.
 -   code cells: images
 -   Tested for nbformat: 4.2.
-
