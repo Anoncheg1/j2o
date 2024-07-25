@@ -1,18 +1,18 @@
-![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push))
-![badge](![img](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release))
-
 
 # Table of Contents
 
-1.  [j2o](#orgbacc8a7)
-2.  [Command line usage](#orgc774cb4)
-3.  [How this works](#org1bf3c7a)
-4.  [Info: Other useful projects](#orgcb52261)
-5.  [Info: Format of ipynb](#orge84f6b3)
-6.  [features](#orge5a8edc)
+1.  [j2o](#org0f5b20b)
+2.  [Command line usage](#org849eb57)
+3.  [How this works](#org03a1552)
+4.  [Info: Other useful projects](#org70dde9a)
+5.  [Info: Format of ipynb](#org5aa75ac)
+6.  [features](#orgbd220b4)
+
+    ![badge](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push)
+    ![badge](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release)
 
 
-<a id="orgbacc8a7"></a>
+<a id="org0f5b20b"></a>
 
 # j2o
 
@@ -26,17 +26,17 @@ TODO: make reverse convrter.
 <https://pypi.org/project/j2o/>
 
 
-<a id="orgc774cb4"></a>
+<a id="org849eb57"></a>
 
 # Command line usage
 
     usage: j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]
-
+    
     Convert a Jupyter notebook to Org file (Emacs) and vice versa
-
+    
     positional arguments:
       jupfile_              Jupyter file
-
+    
     options:
       -h, --help            show this help message and exit
       -j JUPFILE, --jupfile JUPFILE
@@ -47,7 +47,7 @@ TODO: make reverse convrter.
       -w, --overwrite       Flag whether to overwrite existing target file.
 
 
-<a id="org1bf3c7a"></a>
+<a id="org03a1552"></a>
 
 # How this works
 
@@ -56,7 +56,7 @@ TODO: make reverse convrter.
 3.  add Org header and tail around source ("#+begin\_src python &#x2026;", "#+end\_src")
 
 
-<a id="orgcb52261"></a>
+<a id="org70dde9a"></a>
 
 # Info: Other useful projects
 
@@ -64,7 +64,7 @@ TODO: make reverse convrter.
 -   <https://github.com/jkitchin/ox-ipynb>
 
 
-<a id="orge84f6b3"></a>
+<a id="org5aa75ac"></a>
 
 # Info: Format of ipynb
 
@@ -90,10 +90,11 @@ JSON
     }
 
 
-<a id="orge5a8edc"></a>
+<a id="orgbd220b4"></a>
 
 # features
 
 -   in markdown cells conversion: source blocks, ‘#’ to ‘\*’.
 -   code cells: images
 -   Tested for nbformat: 4.2.
+

@@ -1,5 +1,5 @@
-![badge](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push)
-![badge](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release)
+: ![badge](https://github.com/Anoncheg1/j2o/actions/workflows/python-test.yml/badge.svg?event=push)
+: ![badge](https://github.com/Anoncheg1/j2o/actions/workflows/python-publish.yml/badge.svg?event=release)
 * j2o
 Converter from Jupyter to Org file format without any dependencies.
 
