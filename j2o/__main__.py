@@ -90,7 +90,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
         source_lines = cell["source"]
         # -- ORG SRC block header
         header = f"#+begin_src {language_ofkernels} :results output :exports both :session s1"
-        tail = "#+end_src"
+        tail = "#+end_src\n: #----------------------------------------\n"
 
         # -- collect outputs
         outputs = []
@@ -165,7 +165,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
                 PRINT()
 
 
-def j2p_main(source_file_jupyter: str, target_file_org = str | None,
+def j2p_main(source_file_jupyter: str, target_file_org = str or None,
              overwrite: bool = False):
     "Prepare target file and directory for conversion."
     # print(source_file_jupyter, target_file_org, overwrite)
