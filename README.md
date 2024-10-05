@@ -50,7 +50,7 @@ TODO: make reverse convrter.
 For Linux add this line to ```~/.bashrc```
 ```sh
   export PATH=$PATH:/home/u/.local/bin
-````
+```
 <a id="org03a1552"></a>
 
 # How this works
