@@ -90,7 +90,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
         source_lines = cell["source"]
         # -- ORG SRC block header
         header = f"#+begin_src {language_ofkernels} :results output :exports both :session s1"
-        tail = "#+end_src\n: #----------------------------------------\n"
+        tail = "#+end_src"
 
         # -- collect outputs
         outputs = []
@@ -163,6 +163,9 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
                 desc = "" if o["data_descr"] is None else "".join(o["data_descr"])
                 PRINT("[[file:" + o["file_path"] + "]] " + desc)
                 PRINT()
+
+        if cell["cell_type"] == "code":
+            PRINT(": #-------------------------\n")
 
 
 def j2p_main(source_file_jupyter: str, target_file_org = str or None,
