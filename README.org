@@ -30,7 +30,7 @@ options:
 #+end_src
 For Linux add this line to ~~/.bashrc~
 #+begin_src sh
-export PATH=$PATH:/home/u/.local/bin
+export PATH=$PATH:/home/youruser/.local/bin
 #+end_src
 * How this works
 1) Loops through "cells".
