@@ -31,12 +31,12 @@ TODO: make reverse convrter.
 # Command line usage
 
     usage: j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]
-    
+
     Convert a Jupyter notebook to Org file (Emacs) and vice versa
-    
+
     positional arguments:
       jupfile_              Jupyter file
-    
+
     options:
       -h, --help            show this help message and exit
       -j JUPFILE, --jupfile JUPFILE
@@ -47,6 +47,10 @@ TODO: make reverse convrter.
       -w, --overwrite       Flag whether to overwrite existing target file.
 
 
+For Linux add this line to ```~/.bashrc```
+```sh
+  export PATH=$PATH:/home/u/.local/bin
+````
 <a id="org03a1552"></a>
 
 # How this works
@@ -97,4 +101,3 @@ JSON
 -   in markdown cells conversion: source blocks, ‘#’ to ‘\*’.
 -   code cells: images
 -   Tested for nbformat: 4.2.
-

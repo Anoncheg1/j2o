@@ -28,6 +28,10 @@ options:
                         use the filename of the Jupyter file and append .ipynb
   -w, --overwrite       Flag whether to overwrite existing target file.
 #+end_src
+For Linux add this line to ~~/.bashrc~
+#+begin_src sh
+export PATH=$PATH:/home/u/.local/bin
+#+end_src
 * How this works
 1) Loops through "cells".
 2) Extract "source"
