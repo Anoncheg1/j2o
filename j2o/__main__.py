@@ -139,7 +139,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
             # o = {"text": None, "data_file": None, "data_descr": None}
             if o["text"] is not None:
                 if len(o["text"]) <= ORG_BABEL_MIN_LINES_FOR_BLOCK_OUTPUT:
-                    PRINT("#+RESULTS:" + (f"{i}_{k}" if k > 0 else "")) # add index for several RESULT
+                    PRINT("#+RESULTS:" + (f"{i}_{k}" if k > 0 else "")) # add index if there is several RESULT for one block
                     PRINT("".join([": " + t for t in o["text"]])) # .startswith()
                     PRINT()
                 else:

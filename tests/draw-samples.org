@@ -3,6 +3,8 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 #+end_src
+: #-------------------------
+
 * Чтение файла
 #+begin_src python :results output :exports both :session s1
 with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
@@ -12,6 +14,8 @@ with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
 : ['1609459200', '1609459800', '1609460400', '1609461000', '1609461600', '1609462200', '1609462800', '1609463400', '1609464000', '1609464600']
 
 
+: #-------------------------
+
 #+begin_src python :results output :exports both :session s1
 with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
     print(list(dataset['1609459200'].keys()))
@@ -19,6 +23,8 @@ with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
 #+RESULTS:
 : ['events', 'intensity', 'radial_velocity', 'reflectivity']
 
+
+: #-------------------------
 
 #+begin_src python :results output :exports both :session s1
 with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
@@ -33,6 +39,8 @@ with h5py.File('train/2021-01-train.hdf5', mode='r') as dataset:
 : radial_velocity shape: (10, 252, 252)
 : reflectivity shape: (10, 252, 252)
 
+
+: #-------------------------
 
 * Визуализация
 #+begin_src python :results output :exports both :session s1
@@ -63,6 +71,8 @@ radial_velocity[radial_velocity == -1e6] = -1
 reflectivity[reflectivity == -2e6] = -2
 reflectivity[reflectivity == -1e6] = -1
 #+end_src
+: #-------------------------
+
 ** Погодные события
 #+begin_src python :results file graphics :file /tmp/a-a-imgs/8_0.png :exports both :session s1
 _, axs = plt.subplots(1, len(events), figsize=(20, 2))
@@ -73,6 +83,8 @@ for index in range(len(events)):
 #+RESULTS:
 [[file:/tmp/a-a-imgs/8_0.png]] <Figure size 1440x144 with 6 Axes>
 
+: #-------------------------
+
 ** Интенсивность осадков
 #+begin_src python :results file graphics :file /tmp/a-a-imgs/10_0.png :exports both :session s1
 _, axs = plt.subplots(1, len(intensity), figsize=(20, 2))
@@ -82,6 +94,8 @@ for index in range(len(intensity)):
 #+end_src
 #+RESULTS:
 [[file:/tmp/a-a-imgs/10_0.png]] <Figure size 1440x144 with 6 Axes>
+
+: #-------------------------
 
 ** Радиальная скорость по высотам
 #+begin_src python :results file graphics :file /tmp/a-a-imgs/12_0.png :exports both :session s1
@@ -96,6 +110,8 @@ for index in range(len(radial_velocity)):
 #+RESULTS:
 [[file:/tmp/a-a-imgs/12_0.png]] <Figure size 1440x1440 with 60 Axes>
 
+: #-------------------------
+
 ** Отражаемость по высотам
 #+begin_src python :results file graphics :file /tmp/a-a-imgs/14_0.png :exports both :session s1
 _, axs = plt.subplots(10, len(reflectivity), figsize=(20, 20))
@@ -108,4 +124,6 @@ for index in range(len(reflectivity)):
 #+end_src
 #+RESULTS:
 [[file:/tmp/a-a-imgs/14_0.png]] <Figure size 1440x1440 with 60 Axes>
+
+: #-------------------------
 

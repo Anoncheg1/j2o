@@ -1,3 +1,8 @@
+# steps to fix errors:
+# $ python3 -m pytest
+# diff /tmp/a.org tests/draw-samples.org
+# mv /tmp/a.org tests/draw-samples.org
+
 from filecmp import cmp
 import os
 
