@@ -12,30 +12,49 @@ from io import TextIOWrapper
 import logging
 import re
 
-def markdown_to_org(markdown_lines: list[str]) -> list[str]:
+# markdown header line
+header_pattern = re.compile(r'^(#+) (.+)$')
+# source blocks beginning line
+source_block_pattern = re.compile(r'^```[ ]*(\w+)[ ]*$')
+# inline image in markdown in base64
+markdown_image_patter = re.compile(r"(.*)!\[.*?\]\(data:image\/([a-zA-Z]+);base64,([^\)]*)\)(.*)")
+
+mark_image_id = 1 # save name for markdown inline images
+
+def markdown_to_org(markdown_lines: list[str], target_images_dir: str) -> list[str]:
     "Markdown strings to Org mode strings."
+    global mark_image_id
     org_lines = []
 
     # Convert headers
-    header_pattern = re.compile(r'^(#+) (.+)$')
     for line in markdown_lines:
-        match = header_pattern.match(line)
-        if match:
-            level = len(match.group(1))
-            header_text = match.group(2)
+        match_header = header_pattern.match(line)
+        match_image = markdown_image_patter.match(line)
+        if match_header: # header
+            level = len(match_header.group(1))
+            header_text = match_header.group(2)
             org_lines.append('*' * level + ' ' + header_text)
+        elif match_image:  # image
+            t1: str = match_image.group(1)
+            ext: str = match_image.group(2)
+            b64: str = match_image.group(3)
+            t2: str = match_image.group(4)
+            b64img: bytes = base64.b64decode(b64)
+            image_file_path = '.'.join((os.path.join(target_images_dir,
+                                                     str(mark_image_id)),
+                                        ext))
+            # - save to image
+            with open(image_file_path, 'wb') as b64imgfile: # real path
+                b64imgfile.write(b64img)
+            mark_image_id += 1
+            org_lines.append(t1 + "[[file:" + image_file_path + "]]" + t2)
         else:
             org_lines.append(line)
-
-
-
     # Convert source blocks
     org_lines2 = []
-    source_block_pattern = re.compile(r'^```[ ]*(\w+)[ ]*$')
     in_source_block = False
     source_block_language = ''
     for line in org_lines:
-
         if in_source_block:
             if line.strip() == '```':
                 in_source_block = False
@@ -125,7 +144,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
 
         # -- print markdown / code
         if cell["cell_type"] == "markdown":
-            PRINT(markdown_to_org(source_lines))
+            PRINT(markdown_to_org(source_lines, target_images_dir))
             # PRINT()
         else:  # == "code":
             PRINT(header)
@@ -171,7 +190,7 @@ def jupyter2org(f:TextIOWrapper, source_file_jupyter: str,
 def j2p_main(source_file_jupyter: str, target_file_org = str or None,
              overwrite: bool = False):
     "Prepare target file and directory for conversion."
-    # print(source_file_jupyter, target_file_org, overwrite)
+    print(source_file_jupyter, target_file_org, overwrite)
 
     if target_file_org:
         t_path, file_name =  os.path.split(target_file_org)  # "/var/va.org" - > ('/var', 'va.org')
@@ -180,6 +199,7 @@ def j2p_main(source_file_jupyter: str, target_file_org = str or None,
 
     file_name_short = os.path.splitext(file_name)[0] # # "va.org" -> ('va', '.org')
     image_dir = file_name_short[:3] + '-' + file_name_short[-3:] + '-imgs'
+    print(source_file_jupyter, file_name_short[-3:])
     target_images_dir = os.path.normpath(os.path.join(t_path, image_dir))
 
     if target_file_org is None:
@@ -203,23 +223,23 @@ def main():
     "CLI interface."
     parser = argparse.ArgumentParser(
         description="Convert a Jupyter notebook to Org file (Emacs) and vice versa",
-        usage="j2o myfile.ipynb [-w] [-j myfile.ipynb] [-o myfile.org]")
-    parser.add_argument("jupfile_", nargs='?', default=None,
-                        help="Jupyter file")
-    parser.add_argument("-j", "--jupfile",
-                        help="Jupyter file")
+        usage="j2o [-w] [-h] [-o myfile.org] myfile.ipynb")
     parser.add_argument("-o", "--orgfile",
+                        default=None,
+                        type=str,
                         help="Target filename of Org file. If not specified, " +
                         "it will use the filename of the Jupyter file and append .ipynb")
     parser.add_argument("-w", "--overwrite",
                         action="store_true",
                         help="Flag whether to overwrite existing target file.")
-    args = parser.parse_args()
-    jupf = args.jupfile_ if args.jupfile_ else args.jupfile
-    if not jupf:
+    args, unknown = parser.parse_known_args()
+    if len(unknown) != 1:
+        parser.error("Please provide a Jupyter file")
+    jupfile = unknown[0]
+    if not jupfile:
         parser.parse_args(["-h"])
     else:
-        j2p_main(jupf, args.orgfile, args.overwrite)
+        j2p_main(jupfile, args.orgfile, args.overwrite)
 
 
 if __name__ == "__main__":

@@ -39,13 +39,13 @@ def test_converter():
     for x in onlyfiles:
         assert jupyter_4_2_images_sizes[x] == os.stat(os.path.join(image_dir,x)).st_size
 
-
 def test_markdown():
     markdown_lines = [
         '# Header 1',
         'Some text',
         '## Header 2',
         'More text',
+        'Some text with an image: ![imagi.png](data:image/png;base64,iVBORw0KGgoARU5ErkJggg==) and some more text.',
         '',
         '``` python ',
         'print("Hello, world!")',
@@ -56,12 +56,14 @@ def test_markdown():
         '* Header 1',
         'Some text',
         '** Header 2',
-        'More text', '',
+        'More text',
+        'Some text with an image: [[file:/tmp/1.png]] and some more text.',
+        '',
         '#+begin_src python :results none :exports code :eval no',
         'print("Hello, world!")',
         '#+end_src',
         'Even more text']
-    for m, o in zip(markdown_to_org(markdown_lines), org_lines):
+    for m, o in zip(markdown_to_org(markdown_lines, '/tmp/'), org_lines):
         assert (m == o)
 
 
