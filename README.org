@@ -66,4 +66,5 @@ JSON
 * features
 - in markdown cells conversion: source blocks, ‘#’ to ‘*’.
 - code cells: images
+- markdown inline images
 - Tested for nbformat: 4.2.
